@@ -1,16 +1,21 @@
 <import from="@tabler/icons-webfont/dist/tabler-icons.min.css"></import>
 <div class="summary-item-container">
   <div class="text-content">
-    <p>Summary — ${summary.summaryContent}</p>
+    <p if.bind="!editing" dblclick.trigger="startEditing()">Summary — ${summary.summaryContent}</p>
+    <textarea if.bind="editing"
+              ref="draftInput"
+              value.bind="draftContent"
+              blur.trigger="commitEditing()"
+              keydown.trigger="$event.key === 'Escape' ? cancelEditing() : ($event.key === 'Enter' && !$event.shiftKey && commitEditing())"></textarea>
   </div>
   <div class="button-group">
-    <button class="icon-button edit-button" title="Edit" aria-label="Edit">
+    <button class="icon-button edit-button" title="Edit" aria-label="Edit" click.trigger="startEditing()">
       <i class="ti ti-pencil-minus"></i>
     </button>
     <button class="icon-button provenance-button" title="History" aria-label="History">
       <i class="ti ti-history"></i>
     </button>
-    <button class="icon-button trash-button" title="Delete" aria-label="Delete">
+    <button class="icon-button trash-button" title="Delete" aria-label="Delete" click.trigger="deleteSelf()">
       <i class="ti ti-trash"></i>
     </button>
   </div>

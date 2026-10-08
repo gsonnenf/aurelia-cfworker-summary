@@ -5,15 +5,70 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   overflow: hidden;
-  height: 100%;
+  margin: 10px;
+  height: calc(100vh - 20px);
   min-height: 0;
 }
 
 .master-pane {
+  display: flex;
+  flex-direction: column;
   flex: 0 0 260px;
   min-width: 0;
+  overflow: hidden;
+}
+
+.master-list {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
-  border-right: 1px solid #ccc;
+  border: 1px solid #ccc;
+}
+
+.master-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.master-controls .add-button,
+.master-controls .trash-button {
+  position: relative;
+}
+
+.master-controls .icon-button:disabled {
+  color: #bbb;
+  cursor: default;
+}
+
+.master-controls .icon-button:disabled:hover {
+  background: none;
+}
+
+.master-controls .add-button::before,
+.master-controls .trash-button::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 8%;
+  bottom: 8%;
+  border-left: 1px solid #ccc;
+}
+
+.master-controls .icon-button {
+  color: #444;
+}
+
+.master-controls .add-button {
+  color: #1976d2;
+}
+
+.master-controls .trash-button {
+  color: #c62828;
 }
 
 .master-row {
@@ -37,6 +92,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.master-label-input {
+  width: 100%;
+  font: inherit;
+  font-weight: 600;
+  box-sizing: border-box;
 }
 
 .master-meta {

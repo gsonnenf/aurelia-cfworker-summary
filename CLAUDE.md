@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Highest Level Instructions
 Always present the user with a plan before performing an action.
 Always ask permission to perform the action.
+Act as a guide to educate the user on how actions are performed, explain what you are doing as you do it.
 
 ## Commands
 
@@ -44,9 +45,19 @@ Consequences:
 ### Layout
 
 - `src/components/` — custom elements (ts/html/css triples)
-- `src/models/` — plain data classes
+- `src/models/` — plain data classes. Data only; no UI behaviour and no I/O.
+- `src/contracts/` — interfaces, DI tokens and the enums they depend on, split by direction. Contract files carry no implementation and no third-party imports, so a contract never pulls a vendor SDK into whatever consumes it.
+  - `src/contracts/ui/` — Interfaces that effect the UI
+  - `src/contracts/api/` — backend, external apis, and data access (database, LLM, third-party API)
+- `src/services/` — implementations of the contracts, mirroring the same split. Both subfolders exist but are still empty.
+  - `src/services/ui/` — imperative UI that renders its own DOM outside Aurelia's view hierarchy (a SweetAlert toast or dialog wrapper, for example). The dividing line against `src/components/` is whether the thing is used by writing a tag in a template or by calling a method on an injected class.
+  - `src/services/api/` — implementations of the `contracts/api/` interfaces
 - `src/stories/` — Storybook stories plus `*.mock.ts` fixture data. Stories are discovered anywhere under `src/` by the `*.stories.ts` glob, so they may also sit next to a component (as `src/my-app.stories.ts` does).
 - `test/` — Vitest specs (`*.spec.ts`), kept outside `src/`
+
+### Display messages
+
+`src/contracts/ui/IDisplayMessage.ts` declares the `DisplayType` enum (`info`, `pending`, `success`, `fail`, `warning`, `error`, `critical`) and the `IDisplayMessage` interface: `message`, `displayType`, and an optional `callerIdentifier` typed `string | symbol | object` so a presenter can key per-caller display config off either a component instance (`this`) or its class. Nothing implements or consumes this yet. `sweetalert2` is a dependency and is the intended renderer, but no file imports it — keep that import inside the implementation, never in the contract.
 
 ### Icons
 
