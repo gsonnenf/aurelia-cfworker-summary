@@ -3,16 +3,17 @@ import { Registration } from 'aurelia';
 import { SummaryListView } from '../components/summary-list-view';
 import { SummaryListMocks, SummaryListScrollTestMocks } from './summary-list-view.mock';
 import { IDisplayMessage } from '../contracts/ui/IDisplayMessage';
+import { DisplayMessageSw } from '../services/ui/DisplayMessageSw';
 
 
 const meta: Meta<SummaryListView> = {
   title: 'Components/SummaryListView',
   component: SummaryListView,
-  // parameters: {
-  //   aurelia: {
-  //     register: [Registration.singleton(IDisplayMessage, DisplayMessageNoop)],
-  //   },
-  // },
+  parameters: {
+    aurelia: {
+      register: [Registration.singleton(IDisplayMessage, DisplayMessageSw)],
+    },
+  },
 };
 
 export default meta;

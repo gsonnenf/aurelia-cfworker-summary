@@ -4,18 +4,13 @@ import { SummaryItem } from '../models/SummaryItem';
 import { DisplayType, IDisplayMessage } from '../contracts/ui/IDisplayMessage';
 
 
-export class DisplayMessageNoop implements IDisplayMessage {
-  async displayMessage(): Promise<void> {
-    // no-op
-  }
-}
+
 
 export class SummaryListView {
   @bindable lists: SummaryList[] = [];
   @bindable selected: SummaryList | null = null;
 
-  private readonly messageDisplay = new DisplayMessageNoop();
-  //private readonly messageDisplay = resolve(IDisplayMessage);
+  private readonly messageDisplay = resolve(IDisplayMessage);
 
   editingList: SummaryList | null = null;
   draftLabel = '';

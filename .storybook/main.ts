@@ -6,7 +6,8 @@ const config: StorybookConfig & { viteFinal?: (config: InlineConfig, options: { 
   stories: ['../src/**/*.stories.@(ts|tsx|js|jsx|mdx)'],
   addons: [
     '@storybook/addon-links',
-    '@whitespace/storybook-addon-html', 
+    '@storybook/addon-vitest',
+    '@whitespace/storybook-addon-html',
   ],
   framework: {
     name: '@aurelia/storybook',
