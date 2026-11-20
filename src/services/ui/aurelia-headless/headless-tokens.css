@@ -1,0 +1,38 @@
+/*
+ * Shared tokens for the hand-written aurelia-headless component styles.
+ *
+ * Values are copied from the headless-tailwind package's theme.css, keeping
+ * the same names so swapping in the real theme later is a replacement rather
+ * than a rewrite. Only the tokens the hand-written components actually use
+ * are present; add more as components are styled.
+ *
+ * These sit in Tailwind's `theme` cascade layer upstream, so an unlayered
+ * :root rule wins without a specificity fight.
+ */
+
+:root {
+  --color-ink-900: #212121;
+  --color-ink-500: #616161;
+  --color-card: #fff;
+  --color-card-muted: #f5f5f5;
+  --color-card-border: #bdbdbd;
+  --color-primary-700: #005a9e;
+  --color-accent-raised: var(--color-primary-700);
+  --color-ring: #7dc8ff;
+  --ui-duration-base: 140ms;
+  --ui-ease-standard: ease;
+  --ui-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px -1px rgb(0 0 0 / 10%);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-ink-900: #fffc;
+  --color-ink-500: #ffffff80;
+  --color-card: #282828;
+  --color-card-muted: #1f1f1f;
+  --color-card-border: #3a3a3a;
+  --color-primary-700: #a9dbff;
+  --color-ring: #7dc8ff;
+  --ui-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 40%), 0 1px 2px -1px rgb(0 0 0 / 40%);
+}

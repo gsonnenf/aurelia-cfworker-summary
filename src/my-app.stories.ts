@@ -1,5 +1,7 @@
-
+import { Registration } from 'aurelia';
 import { MyApp } from './my-app';
+import { IUiMessageDisplay } from './contracts/ui/IDisplayMessage';
+import { DisplayMessageSw } from './services/ui/DisplayMessageSw';
 
 const meta = {
   title: 'Example/MyApp',
@@ -7,6 +9,11 @@ const meta = {
   render: () => ({
     template: `<my-app message.bind="message"></my-app>`,
   }),
+  parameters: {
+    aurelia: {
+      register: [Registration.singleton(IUiMessageDisplay, DisplayMessageSw)],
+    },
+  },
   argTypes: {
     message: { control: 'text' }
   }

@@ -1,0 +1,125 @@
+/****************************************************************************
+ *                              Form Styling                                *
+ *                                                                          *
+ *  Overrides for the form popup only, scoped to the `app-form` class that   *
+ *  FORM_BASE puts on it. Toasts and confirmations share the same vendor     *
+ *  classes, so nothing here may target bare `.swal2-*` selectors.          *
+ *                                                                          *
+ *  Written as `--swal2-*` custom properties where one exists: sweetalert2   *
+ *  reads these itself, so there is no specificity fight and no dependence   *
+ *  on its internal class structure.                                        *
+ ***************************************************************************/
+
+.app-form {
+  /* Wider than the 24em confirmation: this holds two text fields, not a
+     one-line question. */
+  --swal2-width: 34em;
+  --swal2-border-radius: 3px;
+  --swal2-border: 1px solid #8a8a8a;
+  --swal2-padding: 0 0 1em;
+  --swal2-title-padding: 0.8em 1em 0;
+  --swal2-html-container-padding: 0.5em 1.25em 0;
+  --swal2-actions-justify-content: flex-end;
+  --swal2-actions-margin: 1.2em 0 0;
+  --swal2-actions-padding: 0 1.25em;
+
+  /* The default zoom-and-bounce entrance is the most "modern" part of the
+     stock look; a dialog that simply appears reads as standard. */
+  --swal2-show-animation: none;
+  --swal2-hide-animation: none;
+
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
+}
+
+/* No custom property covers the title's type, so it is set directly. Left
+   aligned, unlike the confirmation's centred question: this titles a form. */
+.app-form .swal2-title {
+  font-size: 1.05em;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: left;
+}
+
+.app-form .swal2-html-container {
+  margin: 0;
+  font-size: 0.95em;
+  color: #374151;
+  text-align: left;
+}
+
+/* Fields stack vertically, each label sitting directly above its control. */
+.app-form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.85em;
+}
+
+.app-form-field label {
+  margin-bottom: 0.25em;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* The `rows` attribute sets the height; width fills the dialog. `resize:
+   vertical` keeps the user from dragging a field wider than its container. */
+.app-form-field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.4em 0.5em;
+  border: 1px solid #9ca3af;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.4;
+  color: #1f2937;
+  resize: vertical;
+}
+
+.app-form-field textarea:focus {
+  border-color: #2563eb;
+  outline: 1px solid #2563eb;
+}
+
+/* Shared geometry. FORM_BASE sets `buttonsStyling: false`, so these are plain
+   <button> elements and every rule here is the only thing sizing them.
+   `appearance: none` is required before a background will apply at all in
+   Safari, and `font-size: inherit` overrides the browser's own button
+   metrics (~13.3px Arial), which would otherwise mismatch the dialog. */
+.app-form .swal2-confirm,
+.app-form .swal2-cancel {
+  appearance: none;
+  min-width: 5.5em;
+  margin: 0 0.25em;
+  padding: 0.25em 1em;
+  border: 1px solid;
+  border-radius: 3px;
+  font-size: inherit;
+  line-height: normal;
+}
+
+/* Cancel takes its palette from the OS via CSS system colors, so it tracks
+   the platform's button chrome and its light/dark theme while keeping the
+   shape set above. */
+.app-form .swal2-cancel {
+  border-color: #858585;
+  background-color: buttonface;
+  color: buttontext;
+}
+
+/* Submit is the primary action, not a destructive one: blue, where the
+   confirmation dialog's confirm button is red. */
+.app-form .swal2-confirm {
+  border-color: #1d4ed8;
+  background-color: #2563eb;
+  color: #fff;
+}
+
+.app-form .swal2-confirm:hover {
+  background-color: #1d4ed8;
+}
+
+.app-form .swal2-confirm:active {
+  background-color: #1e40af;
+}

@@ -1,0 +1,18 @@
+<span
+  if.bind="!editing"
+  class="editable-label-text ${isTextarea ? 'editable-label-text-wrap' : ''}"
+  tabindex.attr="needsTabIndex ? '0' : null">${value}</span><template else><textarea
+    if.bind="isTextarea"
+    ref="inputEl"
+    class="editable-label-input editable-label-textarea"
+    value.bind="draft"
+    keydown.trigger="onInputKeydown($event)"
+    input.trigger="onInputInput()"
+    blur.trigger="onInputBlur()"></textarea><input
+    else
+    ref="inputEl"
+    class="editable-label-input"
+    type="text"
+    value.bind="draft"
+    keydown.trigger="onInputKeydown($event)"
+    blur.trigger="onInputBlur()"/></template>

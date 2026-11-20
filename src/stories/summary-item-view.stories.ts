@@ -25,7 +25,7 @@ export const Test: Story = {
       "id": "s1",
       "order": 1,
       "messageContent": "Test messsage",
-      "summaryContent": "User asked about summarizer AFADSFoptions."
+      "summaryContent": "User asked about summary"
     }
   }
 };

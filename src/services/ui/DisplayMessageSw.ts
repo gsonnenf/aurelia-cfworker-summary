@@ -1,8 +1,10 @@
 import Swal from 'sweetalert2';
 import type { SweetAlertOptions } from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+// After the vendor sheet, so its `--swal2-*` defaults are the ones overridden.
+import './DisplayMessageSw.css';
 import { DisplayType } from '../../contracts/ui/IDisplayMessage';
-import type { IDisplayMessage, RegistryKey } from '../../contracts/ui/IDisplayMessage';
+import type { IUiMessageDisplay, RegistryKey } from '../../contracts/ui/IDisplayMessage';
 
 /**
  * Default toast settings per {@link DisplayType}. Computed keys make this a
@@ -84,29 +86,97 @@ const TOAST_BASE: SweetAlertOptions = {
   showCloseButton: false,
 };
 
+/**
+ * Settings shared by every confirmation, regardless of modality.
+ *
+ * Deliberately not built on {@link TOAST_BASE}: that pins `toast: true` and
+ * `showConfirmButton: false`, which a confirmation needs the opposite of.
+ */
+const CONFIRM_BASE = {
+  //icon: 'warning',
+  showCancelButton: true,
+  // Confirm on the right, matching OS dialog convention, so muscle memory
+  // does not fire a destructive action.
+  reverseButtons: true,
+  focusCancel: true,
+  // Drops the vendor's `swal2-styled` class, leaving plain <button>s that the
+  // browser renders as its own native controls. This also makes
+  // confirmButtonColor/cancelButtonColor inert, so they are not set.
+  buttonsStyling: false,
+  // Scope for DisplayMessageSw.css. Without it every override there would
+  // also hit the seven toast types, which share the same vendor classes.
+  customClass: { popup: 'app-confirm' },
+} satisfies SweetAlertOptions;
+
 export type DisplayMessageHandler = (message: string,displayType: DisplayType) => Promise<void> | void;
 
-export class DisplayMessageSw implements IDisplayMessage {
+export class DisplayMessageSw implements IUiMessageDisplay {
+
+  /****************************************************************************
+   *                              Display Message                                   *
+   ***************************************************************************/
+
   private readonly swal = Swal.mixin(TOAST_BASE);
 
-  private readonly callerOverrides = new Map<RegistryKey, DisplayMessageHandler>();
+  private readonly callerOverridesDisplay = new Map<RegistryKey, DisplayMessageHandler>();
 
-  registerCaller(callerIdentifier: RegistryKey, handler: DisplayMessageHandler) {
-    this.callerOverrides.set(callerIdentifier, handler);
-    return () => this.callerOverrides.delete(callerIdentifier);
+  registerCallerDisplayMessage(callerIdentifier: RegistryKey, handler: DisplayMessageHandler) {
+    this.callerOverridesDisplay.set(callerIdentifier, handler);
+    return () => this.callerOverridesDisplay.delete(callerIdentifier);
   }
 
   async displayMessage( message: string, displayType: DisplayType, callerIdentifier?: RegistryKey ): Promise<void> {
-    const overrideCallback = (callerIdentifier === undefined) ? undefined : this.callerOverrides.get(callerIdentifier);
+    const overrideCallback = (callerIdentifier === undefined) ? undefined : this.callerOverridesDisplay.get(callerIdentifier);
     if (overrideCallback) await overrideCallback(message, displayType);
-    else await this.fire(message, displayType);
+    else await this._fireDisplayMessage(message, displayType);
   }
 
   /** Fires one toast from its type's defaults. */
-  private async fire(message: string, displayType: DisplayType) {
+  private async _fireDisplayMessage(message: string, displayType: DisplayType) {
     await this.swal.fire({
       ...TOAST_DEFAULTS[displayType],
       title: message,
     });
   }
+
+  /****************************************************************************
+   *                              Confirm Message                             
+   ***************************************************************************/
+
+  async confirmMessage(
+    options: {
+      messageText: string;
+      confirmText?: string;
+      cancelText?: string;
+    },
+    isModal: boolean
+  ): Promise<boolean> {
+    return await this._fireConfirmMessage(options, isModal);
+  }
+
+  private async _fireConfirmMessage(
+    options: { messageText: string; confirmText?: string; cancelText?: string },
+    isModal: boolean
+  ): Promise<boolean> {
+    const modality = (isModal
+      ? { toast: false, allowOutsideClick: false, allowEscapeKey: false }
+      : { toast: true, position: 'top-end' }) satisfies SweetAlertOptions;
+
+    const config = {
+      ...CONFIRM_BASE,
+      ...modality,
+      title: options.messageText,
+      confirmButtonText: options.confirmText ?? 'OK',
+      cancelButtonText: options.cancelText ?? 'Cancel',
+    } satisfies SweetAlertOptions;
+
+    const result = await Swal.fire(config);
+
+    return result.isConfirmed;
+  }
+
+
+
+
+
 }

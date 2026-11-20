@@ -1,0 +1,64 @@
+/*
+ * Plain-CSS translation of headless-tailwind's ui-segmented-control-theme.css.
+ *
+ * Selectors, state hooks and token names match the upstream theme exactly;
+ * only the @apply lines are expanded into ordinary declarations. Requires the
+ * tokens in headless-tokens.css.
+ */
+
+ui-segmented-control,
+.ui-segmented-control {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--color-card-border);
+  border-radius: 0.75rem;
+  background-color: var(--color-card-muted);
+}
+
+.ui-segmented-control[data-disabled] {
+  opacity: 0.6;
+}
+
+ui-segment,
+.ui-segment {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  outline: none;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink-500);
+  cursor: pointer;
+  transition:
+    background-color var(--ui-duration-base) var(--ui-ease-standard),
+    color var(--ui-duration-base) var(--ui-ease-standard),
+    box-shadow var(--ui-duration-base) var(--ui-ease-standard);
+}
+
+ui-segment:hover,
+.ui-segment:hover {
+  background-color: var(--color-card);
+  color: var(--color-ink-900);
+}
+
+ui-segment:focus-visible,
+.ui-segment:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-ring);
+}
+
+ui-segment[data-selected],
+.ui-segment[data-selected] {
+  background-color: var(--color-card);
+  color: var(--color-accent-raised);
+  box-shadow: var(--ui-shadow-sm);
+}
+
+ui-segment[data-disabled],
+.ui-segment[data-disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+  cursor: not-allowed;
+}

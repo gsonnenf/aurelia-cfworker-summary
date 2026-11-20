@@ -42,7 +42,7 @@ export type RegistryKey = string | symbol | object;
  * Aurelia.register(Registration.singleton(IDisplayMessage, DisplayMessageSw))
  * ```
  */
-export interface IDisplayMessage {
+export interface IUiMessageDisplay {
   /**
    * @param message What the user reads.
    * @param displayType Which display treatment it gets.
@@ -56,6 +56,24 @@ export interface IDisplayMessage {
     displayType: DisplayType,
     callerIdentifier?: RegistryKey
   ): Promise<void>;
+
+  /**
+   * @param options Text for the prompt and its two buttons.
+   * @param isModal Whether the confirmation blocks interaction with the page.
+   * @param callerIdentifier The control, component or element that raised it.
+   *   Either an instance (`this`) or its class, so a display can key
+   *   per-caller settings off whichever it has config for.
+   * @returns Resolves `true` if the user applied, `false` if they cancelled.
+   */
+  confirmMessage(
+    options: {
+      messageText: string;
+      confirmText?: string; //Default Ok
+      cancelText?: string; //Default Cancel
+    },
+    isModal: boolean,
+    callerIdentifier?: RegistryKey
+  ): Promise<boolean>;
 }
 
-export const IDisplayMessage = DI.createInterface<IDisplayMessage>('IDisplayMessage');
+export const IUiMessageDisplay = DI.createInterface<IUiMessageDisplay>('IDisplayMessage');

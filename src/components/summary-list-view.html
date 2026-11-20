@@ -1,18 +1,12 @@
 <import from="@tabler/icons-webfont/dist/tabler-icons.min.css"></import>
 <import from="./summary-item-view"></import>
+<import from="./editable-label"></import>
 <div class="summary-list-container">
-  <div class="master-pane">
     <div class="master-list">
       <div class="master-row ${list === selected ? 'active' : ''}"
            repeat.for="list of lists"
            click.trigger="select(list)">
-        <div class="master-label" if.bind="editingList !== list" dblclick.trigger="startEditingLabel(list)">${list.label}</div>
-        <input class="master-label-input" if.bind="editingList === list"
-               ref="labelInput"
-               value.bind="draftLabel"
-               click.trigger="$event.stopPropagation()"
-               blur.trigger="commitEditingLabel()"
-               keydown.trigger="$event.key === 'Escape' ? cancelEditingLabel() : ($event.key === 'Enter' && commitEditingLabel())">
+        <editable-label class="master-label" value.bind="list.label"></editable-label>
         <div class="master-meta">
           <span>${list.timestamp.toLocaleDateString()}</span>
           <span>${list.summaries.length} items</span>
@@ -33,12 +27,24 @@
         <i class="ti ti-trash"></i>
       </button>
     </div>
-  </div>
-  <div class="detail-pane">
-    <template if.bind="selected">
-      <summary-item-view repeat.for="item of selected.summaries" summary.bind="item" on-delete.bind="() => deleteItem(item)"></summary-item-view>
-      <div class="empty-state" if.bind="!selected.summaries.length">This list has no summaries.</div>
-    </template>
-    <div class="empty-state" else>Select a list to view its summaries.</div>
-  </div>
+    <div class="detail-list">
+      <template if.bind="selected">
+        <summary-item-view repeat.for="summaryItem of selected.summaries"
+                           class="summary-item ${selectedItems.includes(summaryItem) ? 'selected' : ''}"
+                           click.trigger="selectItem(summaryItem, $event)"
+                           summary.bind="summaryItem"></summary-item-view>
+        <div class="empty-state" if.bind="!selected.summaries.length">This list has no summaries.</div>
+      </template>
+      <div class="empty-state" else>Select a list to view its summaries.</div>
+    </div>
+    <div class="detail-controls">
+      <button class="icon-button add-button" title="Add" aria-label="Add">
+        <i class="ti ti-plus"></i>
+      </button>
+      <button class="icon-button trash-button" title="Delete" aria-label="Delete"
+              disabled.bind="!selectedItems.length"
+              click.trigger="deleteSelectedItems()">
+        <i class="ti ti-trash"></i>
+      </button>
+    </div>
 </div>

@@ -1,0 +1,91 @@
+/****************************************************************************
+ *                           Confirm Message Styling                        *
+ *                                                                          *
+ *  Overrides for the confirmation popup only, scoped to the `app-confirm`  *
+ *  class that CONFIRM_BASE puts on it. Toasts keep the vendor styling, so  *
+ *  nothing here may target bare `.swal2-*` selectors.                      *
+ *                                                                          *
+ *  Written as `--swal2-*` custom properties rather than rule overrides:    *
+ *  sweetalert2 reads these itself, so there is no specificity fight and    *
+ *  no dependence on its internal class structure.                         *
+ ***************************************************************************/
+
+.app-confirm {
+  /* A plain bordered box rather than a floating rounded card. */
+  --swal2-width: 24em;
+  --swal2-border-radius: 3px;
+  --swal2-border: 1px solid #8a8a8a;
+  --swal2-padding: 0 0 1em;
+  --swal2-title-padding: 0.8em 1em 0;
+  --swal2-html-container-padding: 0.5em 1em 0;
+
+  /* Buttons right-aligned and snug against the dialog edge, as in a native
+     dialog, instead of centred with wide gaps. */
+  --swal2-actions-justify-content: center;
+  --swal2-actions-margin: 1.2em 0 0;
+  --swal2-actions-padding: 0 1em;
+
+  /* The default zoom-and-bounce entrance is the most "modern" part of the
+     stock look; a dialog that simply appears reads as standard. */
+  --swal2-show-animation: none;
+  --swal2-hide-animation: none;
+
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
+}
+
+/* No custom property covers the title's type, so it is set directly. The
+   stock 1.875em reads as a page heading rather than a question. */
+.app-confirm .swal2-title {
+  font-size: 1.05em;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+}
+
+.app-confirm .swal2-html-container {
+  font-size: 0.95em;
+  color: #374151;
+  text-align: center;
+}
+
+/* Shared geometry. CONFIRM_BASE sets `buttonsStyling: false`, so these are
+   plain <button> elements and every rule here is the only thing sizing them.
+   `appearance: none` is required before a background will apply at all in
+   Safari, and `font-size: inherit` overrides the browser's own button
+   metrics (~13.3px Arial), which would otherwise mismatch the dialog. */
+.app-confirm .swal2-confirm,
+.app-confirm .swal2-cancel {
+  appearance: none;
+  min-width: 5.5em;
+  margin: 0 0.25em;
+  padding: 0.25em 1em;
+  border: 1px solid;
+  border-radius: 3px;
+  font-size: inherit;
+  line-height: normal;
+}
+
+/* Cancel takes its palette from the OS via CSS system colors, so it tracks
+   the platform's button chrome and its light/dark theme while keeping the
+   shape set above. */
+.app-confirm .swal2-cancel {
+  border-color: #858585;
+  background-color: buttonface;
+  color: buttontext;
+}
+
+/* The destructive action is the one button given an explicit palette. */
+.app-confirm .swal2-confirm {
+  border-color: #991b1b;
+  background-color: #dc2626;
+  color: #fff;
+}
+
+.app-confirm .swal2-confirm:hover {
+  background-color: #b91c1c;
+}
+
+.app-confirm .swal2-confirm:active {
+  background-color: #991b1b;
+}

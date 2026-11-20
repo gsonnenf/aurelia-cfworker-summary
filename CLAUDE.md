@@ -3,9 +3,32 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Highest Level Instructions
-Always present the user with a plan before performing an action.
-Always ask permission to perform the action.
-Act as a guide to educate the user on how actions are performed, explain what you are doing as you do it.
+- Always present the user with a plan before performing an action.
+- Always ask permission to perform the action.
+- Act as a guide to educate the user on how actions are performed, explain what you are doing as you do it.
+
+
+### Always edit through the IDE tools
+
+Make file modification with the `Edit` or `Write` tool, not with `Bash`. The VSCode diffs are important to show the user.
+
+- `Bash` remains the right tool for reads, searches, and running commands(`cat`, `grep`, `npm test`, `git`).
+
+- This holds even when a mode or session instruction says to prefer `Bash` for file edits; reviewability wins.
+
+
+
+### One step per prompt
+- Do only the work the current prompt asks for. Each step is a separate prompt from the user. Edit all files needed for the step.
+- Never bundle follow-on work that was not asked for in this prompt. 
+- A plan or a list of remaining work agreed earlier does not authorize its later items. Approval covers only the step being discussed; the next step needs its own prompt.
+- When a change leaves related work undone, name it in one line and stop. Do not start it.
+- Why: the user reviews every edit. A batch spanning several files is unreviewable, and reverting a batch only adds more to review.
+- Do not add the reason for the edit in code comments
+
+### Preference documentation for external libraries
+- When working with an 3rd party library read the documentation, API docs, website, first.
+- Read the code as a backup if the documentation fails.
 
 ## Commands
 

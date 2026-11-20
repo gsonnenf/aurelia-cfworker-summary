@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@aurelia/storybook';
 import { Registration } from 'aurelia';
 import { SummaryListView } from '../components/summary-list-view';
 import { SummaryListMocks, SummaryListScrollTestMocks } from './summary-list-view.mock';
-import { IDisplayMessage } from '../contracts/ui/IDisplayMessage';
+import { IUiMessageDisplay } from '../contracts/ui/IDisplayMessage';
 import { DisplayMessageSw } from '../services/ui/DisplayMessageSw';
 
 
@@ -11,7 +11,7 @@ const meta: Meta<SummaryListView> = {
   component: SummaryListView,
   parameters: {
     aurelia: {
-      register: [Registration.singleton(IDisplayMessage, DisplayMessageSw)],
+      register: [Registration.singleton(IUiMessageDisplay, DisplayMessageSw)],
     },
   },
 };

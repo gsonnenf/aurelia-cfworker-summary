@@ -1,8 +1,30 @@
+/****************************************************************************
+ *                                  Layout                                  *
+ *                                                                          *
+ *  A 2x2 grid rather than two independent panes: the shared rows are what   *
+ *  make both toolbars sit on one baseline, whatever either list contains.   *
+ *  Named areas let the markup stay grouped by pane instead of being         *
+ *  ordered to suit the grid.                                               *
+ ***************************************************************************/
+
 .summary-list-container {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  border: 1px solid #ccc;
+  /* Quadrant edges: the outer border and the two internal dividers.
+     Declared once and inherited by every child, so they cannot drift. */
+  --grid-border-color: #888;
+
+  /* Selection accent, shared by list rows and detail items. */
+  --accent-color: #1976d2;
+  --accent-surface: #e3f0fb;
+
+  display: grid;
+
+  /* Areas with their track sizes inline, columns after the slash, so the
+     2x2 shape is readable in one place. */
+  grid-template:
+    "master-list     detail-list    " 1fr
+    "master-controls detail-controls" auto
+    / 260px 1fr;
+  border: 1px solid var(--grid-border-color);
   border-radius: 4px;
   overflow: hidden;
   margin: 10px;
@@ -10,65 +32,22 @@
   min-height: 0;
 }
 
-.master-pane {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 260px;
-  min-width: 0;
-  overflow: hidden;
-}
+/****************************************************************************
+ *                        Master pane — list of lists                       *
+ ***************************************************************************/
 
+/* min-width/min-height 0: a grid item defaults to min-content, which would
+   let a long list push the row past its track and break toolbar pinning. */
 .master-list {
-  flex: 1 1 auto;
+  grid-area: master-list;
+  min-width: 0;
   min-height: 0;
   overflow-y: auto;
-  border: 1px solid #ccc;
-}
 
-.master-controls {
-  display: flex;
-  justify-content: flex-end;
-  gap: 9px;
-  flex: 0 0 auto;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-top: none;
-}
-
-.master-controls .add-button,
-.master-controls .trash-button {
-  position: relative;
-}
-
-.master-controls .icon-button:disabled {
-  color: #bbb;
-  cursor: default;
-}
-
-.master-controls .icon-button:disabled:hover {
-  background: none;
-}
-
-.master-controls .add-button::before,
-.master-controls .trash-button::before {
-  content: '';
-  position: absolute;
-  left: -5px;
-  top: 8%;
-  bottom: 8%;
-  border-left: 1px solid #ccc;
-}
-
-.master-controls .icon-button {
-  color: #444;
-}
-
-.master-controls .add-button {
-  color: #1976d2;
-}
-
-.master-controls .trash-button {
-  color: #c62828;
+  /* Keeps the rows off the quadrant's edges: the row padding is internal, so
+     without this the rows and their separators run into the border. */
+  padding: 6px;
+  border-right: 1px solid var(--grid-border-color);
 }
 
 .master-row {
@@ -77,28 +56,24 @@
   cursor: pointer;
 }
 
+/* Hover before active: equal specificity, so the later rule wins when a
+   row is both hovered and selected. */
 .master-row:hover {
   background: #f0f0f0;
 }
 
 .master-row.active {
-  background: #e3f0fb;
-  border-left: 3px solid #1976d2;
+  background: var(--accent-surface);
+  border-left: 3px solid var(--accent-color);
   padding-left: 7px;
 }
 
+/* The label handles its own truncation and input sizing; it only needs the
+   weight, which inherits into both its text and its input. */
 .master-label {
+  display: block;
+  min-width: 0;
   font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.master-label-input {
-  width: 100%;
-  font: inherit;
-  font-weight: 600;
-  box-sizing: border-box;
 }
 
 .master-meta {
@@ -125,15 +100,104 @@
   font-size: 11px;
 }
 
-.detail-pane {
+/****************************************************************************
+ *                     Detail pane — items of one list                      *
+ ***************************************************************************/
+
+.detail-list {
+  grid-area: detail-list;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
   overflow-y: auto;
   padding: 10px;
 }
+
+/* Selection is styled on the host element from here rather than inside
+   summary-item-view, because the parent owns which item is current. The
+   transparent border reserves the 3px so selecting does not shift the row. */
+.summary-item {
+  display: block;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+
+.summary-item.selected {
+  border-left-color: var(--accent-color);
+  background: var(--accent-surface);
+}
+
+/****************************************************************************
+ *                               Pane toolbars                              *
+ *                                                                          *
+ *  Both quadrants in row 2 share every rule, so each selector below uses   *
+ *  :is(.master-controls, .detail-controls). That matches one class, so the  *
+ *  specificity is identical to naming either pane directly — which these   *
+ *  rules depend on, since they also override the global `.icon-button`     *
+ *  styles that summary-item-view.css contributes.                          *
+ ***************************************************************************/
+
+.master-controls,
+.detail-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  padding: 6px 10px;
+  border-top: 1px solid var(--grid-border-color);
+}
+
+.master-controls {
+  grid-area: master-controls;
+  border-right: 1px solid var(--grid-border-color);
+}
+
+.detail-controls {
+  grid-area: detail-controls;
+}
+
+/* Base colour first: the per-button colours below tie with it on
+   specificity, so they only win by coming later. */
+:is(.master-controls, .detail-controls) .icon-button {
+  color: #444;
+}
+
+:is(.master-controls, .detail-controls) .add-button {
+  color: var(--accent-color);
+}
+
+:is(.master-controls, .detail-controls) .trash-button {
+  color: #c62828;
+}
+
+:is(.master-controls, .detail-controls) :is(.add-button, .trash-button) {
+  position: relative;
+}
+
+/* A hairline before each button, drawn inside its own box so it spaces
+   itself against whatever sits to its left. */
+:is(.master-controls, .detail-controls) :is(.add-button, .trash-button)::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 8%;
+  bottom: 8%;
+  border-left: 1px solid #ccc;
+}
+
+:is(.master-controls, .detail-controls) .icon-button:disabled {
+  color: #bbb;
+  cursor: default;
+}
+
+:is(.master-controls, .detail-controls) .icon-button:disabled:hover {
+  background: none;
+}
+
+/****************************************************************************
+ *                                  Shared                                  *
+ ***************************************************************************/
 
 .empty-state {
   padding: 10px;

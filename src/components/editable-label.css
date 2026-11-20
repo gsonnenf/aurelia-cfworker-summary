@@ -1,0 +1,40 @@
+
+.editable-label {
+  min-width: 0;
+}
+
+.editable-label-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A textarea can commit wrapped text and line breaks, so the rendered text
+   has to be able to show them. `pre-wrap` rather than `normal`: a committed
+   newline is part of the value, not collapsible whitespace. */
+.editable-label-text-wrap {
+  overflow: visible;
+  overflow-wrap: break-word;
+  text-overflow: clip;
+  white-space: pre-wrap;
+}
+
+.editable-label-input {
+  width: 100%;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+/* The component fits the height to the content, so there is nothing for a
+   drag handle to do. Zero padding and border keep the editor's content box
+   the same width as the rendered text, so both wrap at the same points. */
+.editable-label-textarea {
+  display: block;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  resize: none;
+  white-space: pre-wrap;
+}

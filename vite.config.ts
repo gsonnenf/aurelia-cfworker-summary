@@ -7,7 +7,9 @@ export default defineConfig({
     open: !process.env.CI,
     port: 9000,
   },
-  esbuild: {
+  // Vite 8 transforms with oxc, not esbuild; the `esbuild` key is deprecated
+  // and silently ignored when both are present.
+  oxc: {
     target: 'es2022'
   },
   plugins: [

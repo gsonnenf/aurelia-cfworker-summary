@@ -1,32 +1,13 @@
 import { bindable } from 'aurelia';
 import { SummaryItem } from '../models/SummaryItem';
+import { EditableLabel } from './editable-label';
 //import '@tabler/icons-webfont/dist/tabler-icons.min.css';
 
 export class SummaryItemView {
   @bindable summary!: SummaryItem;
-  @bindable onDelete?: (summary: SummaryItem) => void;
-  editing = false;
-  draftContent = '';
-  draftInput?: HTMLTextAreaElement;
 
-  deleteSelf() {
-    this.onDelete?.();
-  }
-
-  startEditing() {
-    this.draftContent = this.summary.summaryContent;
-    this.editing = true;
-    setTimeout(() => this.draftInput?.focus(), 0);
-  }
-
-  commitEditing() {
-    this.summary.summaryContent = this.draftContent;
-    this.editing = false;
-  }
-
-  cancelEditing() {
-    this.editing = false;
-  }
+  /** Set by `view-model.ref` in the template, so the edit button can drive it. */
+  contentLabel!: EditableLabel;
 
     // Lifecycle hooks, delete the ones you don't need
   binding() {}

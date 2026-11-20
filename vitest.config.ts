@@ -28,7 +28,7 @@ export default defineConfig({
         // bundle's Buffer usage), which rewrites node:process/node:fs/node:child_process
         // imports and breaks addon-vitest's own Node-side setup script. Bring in
         // just the one Aurelia plugin instance instead.
-        esbuild: { target: "es2022" },
+        oxc: { target: "es2022" },
         plugins: [
           aurelia({ useDev: true }),
           storybookTest({ configDir: path.join(dirname, ".storybook") }),
